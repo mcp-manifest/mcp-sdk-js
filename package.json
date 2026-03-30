@@ -1,0 +1,39 @@
+{
+  "name": "@mcp-manifest/sdk",
+  "version": "0.1.0",
+  "description": "Discover and parse mcp-manifest.json files for MCP client developers",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "prepublishOnly": "tsc"
+  },
+  "keywords": [
+    "mcp",
+    "manifest",
+    "model-context-protocol",
+    "autodiscovery",
+    "sdk"
+  ],
+  "author": "mcp-manifest",
+  "license": "CC0-1.0",
+  "homepage": "https://mcp-manifest.dev",
+  "repository": {
+    "type": "git",
+    "url": "https://git.marketally.com/mcp-manifest/sdk-js"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "typescript": "^5.7.0"
+  }
+}
