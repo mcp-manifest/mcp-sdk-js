@@ -26,6 +26,7 @@ export interface McpManifestServer {
   homepage?: string;
   repository?: string;
   license?: string;
+  icon?: string;
   keywords?: string[];
 }
 
@@ -52,6 +53,15 @@ export interface McpManifestConfig {
   env_var?: string;
   arg?: string;
   prompt?: string;
+  options?: string[];
+  options_from?: McpManifestOptionsFrom;
+}
+
+export interface McpManifestOptionsFrom {
+  /** Path to a local JSON file. ~ is expanded to the user's home directory. */
+  file: string;
+  /** JSONPath expression to extract values from the file. */
+  path: string;
 }
 
 /**
