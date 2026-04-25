@@ -89,4 +89,4 @@ The SDK exports full TypeScript types for the manifest spec:
 
 ## License
 
-CC0 1.0 -- Public domain.
+Apache-2.0 — see [LICENSE](LICENSE) for the full license text and [NOTICE](NOTICE) for attribution.

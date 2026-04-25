@@ -12,7 +12,10 @@
     }
   },
   "files": [
-    "dist/"
+    "dist/",
+    "README.md",
+    "LICENSE",
+    "NOTICE"
   ],
   "scripts": {
     "build": "tsc",
@@ -25,8 +28,8 @@
     "autodiscovery",
     "sdk"
   ],
-  "author": "mcp-manifest",
-  "license": "CC0-1.0",
+  "author": "David H. Friedel Jr. — MarketAlly Pte Ltd",
+  "license": "Apache-2.0",
   "homepage": "https://mcp-manifest.dev",
   "repository": {
     "type": "git",
