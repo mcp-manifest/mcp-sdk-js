@@ -33,7 +33,7 @@
   "homepage": "https://mcp-manifest.dev",
   "repository": {
     "type": "git",
-    "url": "https://git.marketally.com/mcp-manifest/sdk-js"
+    "url": "https://github.com/mcp-manifest/mcp-sdk-js"
   },
   "devDependencies": {
     "@types/node": "^25.5.0",
