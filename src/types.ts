@@ -1,6 +1,9 @@
 /**
  * MCP Manifest — top-level manifest object.
- * Conforms to the mcp-manifest.dev spec v0.1.
+ * Conforms to the mcp-manifest.dev spec v1.0.
+ *
+ * Security-related fields are documented inline; see the spec's
+ * THREAT-MODEL.md for the rationale behind each field.
  */
 export interface McpManifest {
   $schema?: string;
@@ -12,6 +15,14 @@ export interface McpManifest {
   config?: McpManifestConfig[];
   scopes?: Array<'global' | 'project' | 'both'>;
   settings_template?: McpManifestSettingsTemplate;
+  /** How clients should handle updates. Default 'manual'. (T4) */
+  update_policy?: 'auto' | 'manual' | 'ask';
+  /** URL to a human-readable changelog displayed during update prompts. (T4) */
+  changelog_url?: string;
+  /** Cryptographic publisher signature. (T1) */
+  signature?: McpManifestSignature;
+  /** Vendor extensions; keys MUST start with 'x-'. (T5) */
+  extensions?: Record<string, unknown>;
 }
 
 /**
@@ -34,10 +45,13 @@ export interface McpManifestServer {
  * A single installation method.
  */
 export interface McpManifestInstall {
-  method: 'dotnet-tool' | 'npm' | 'pip' | 'cargo' | 'binary' | 'docker';
+  method: 'dotnet-tool' | 'npm' | 'pip' | 'cargo' | 'gem' | 'prebuilt-binary' | 'docker';
   package: string;
-  source?: string;
   command: string;
+  /** Explicit registry origin URL. RECOMMENDED for non-default registries. (T2) */
+  registry?: string;
+  /** SHA-256 checksum 'sha256:HEX'. REQUIRED when method='prebuilt-binary'. (T2) */
+  checksum?: string;
   priority?: number;
 }
 
@@ -55,6 +69,10 @@ export interface McpManifestConfig {
   prompt?: string;
   options?: string[];
   options_from?: McpManifestOptionsFrom;
+  /** Intended recipient origin for secrets (e.g., 'api.openai.com'). REQUIRED when type='secret'. (T3) */
+  secret_target?: string;
+  /** URL pattern this secret may be sent to. (T3) */
+  secret_scope_url?: string;
 }
 
 export interface McpManifestOptionsFrom {
@@ -74,12 +92,31 @@ export interface McpManifestSettingsTemplate {
 }
 
 /**
+ * Cryptographic signature over the canonicalized manifest. (T1)
+ *
+ * The signed payload is the manifest JSON with the `signature` field removed,
+ * canonicalized via RFC 8785 (JCS), then signed with Ed25519.
+ */
+export interface McpManifestSignature {
+  /** Currently only 'Ed25519' is defined. */
+  alg: 'Ed25519';
+  /** Opaque identifier for the publisher's signing key. */
+  key_id: string;
+  /** Base64url-encoded signature (no padding). */
+  value: string;
+}
+
+/**
  * Result returned by the discover() function.
  */
 export interface DiscoveryResult {
   manifest: McpManifest | null;
   source: string;
   errors: string[];
+  /** SHA-256 hex of the raw manifest bytes that were fetched. (T6) */
+  manifest_hash?: string;
+  /** Result of signature verification, if a signature was present. (T1) */
+  signature_status?: 'unsigned' | 'verified' | 'invalid' | 'unknown-key';
 }
 
 /**
@@ -88,4 +125,13 @@ export interface DiscoveryResult {
 export interface ValidationResult {
   valid: boolean;
   errors: string[];
+}
+
+/**
+ * Result of verifying a prebuilt-binary checksum. (T2)
+ */
+export interface ChecksumResult {
+  valid: boolean;
+  expected: string;
+  actual: string;
 }
